@@ -27,21 +27,27 @@
 
 #include <yarp/manager/broker.h>
 #include <yarp/manager/primresource.h>
+#include <yarp/logger/YarpLogger.h>
 
 namespace yarp {
 namespace manager {
 
 struct LogPort : yarp::os::Port
 {
-    std::vector<std::string> log;
+    std::vector<yarp::yarpLogger::MessageEntry> log;
     struct CallBackBottle : public yarp::os::PortReader
     {
-        std::vector<std::string>* container;
+        std::vector<yarp::yarpLogger::MessageEntry>* container;
         virtual bool read(yarp::os::ConnectionReader& reader) override
         {
             yarp::os::Bottle b;
-            bool ret = b.read(reader);
-            if (container && b.size() > 1) container->push_back(b.get(1).asString());
+            bool             ret = b.read(reader);
+            std::string      s(b.get(1).asString().c_str());
+
+            if (container && b.size() == 2)
+            {
+                container->push_back(s);
+            }
             return ret;
         }
     }logb;
@@ -101,7 +107,7 @@ public:
      bool setQos(const char* from, const char* to,
                  const char* qosFrom, const char* qosTo);
 
-     std::vector<std::string>& getLog() { return log.log; }
+     std::vector<yarp::yarpLogger::MessageEntry>& getLog() { return log.log; }
 
 public: // for rate thread
     void run() override;

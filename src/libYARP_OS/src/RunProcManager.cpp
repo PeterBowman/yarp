@@ -385,6 +385,28 @@ yarp::os::Bottle YarpRunInfoVector::PS()
     return ps;
 }
 
+std::string YarpRunInfoVector::logPort(const std::string& alias)
+{
+    WAIT()
+
+        for (int i = 0; i<m_nProcesses; ++i)
+        {
+            if (m_apList[i] && m_apList[i]->Match(alias))
+            {
+                if (m_apList[i]->IsActive())
+                {
+                    std::string ret = m_apList[i]->logPort;
+                    POST()
+                        return ret;
+                }
+            }
+        }
+
+    POST()
+
+        return "";
+}
+
 bool YarpRunInfoVector::IsRunning(yarp::os::ConstString &alias)
 {
     WAIT()

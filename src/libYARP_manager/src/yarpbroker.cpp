@@ -358,6 +358,23 @@ int YarpBroker::running()
             strError += string(" due to " + __trace_message);
         return -1;
     }
+
+    if (!log.isOpen())
+    {
+        log.open("...");
+    }
+    if (log.getInputCount() == 0)
+    {
+        if (log.connect(response.get(LOGGERPORT-1).asString()))
+        {
+            yInfo() << "yarpbroker: succesfully connected to log port";
+        }
+        else
+        {
+            yError() << "yarpbroker: failed to connect to log port";
+        }
+    }
+    
     return ((response.get(0).asString() == "running")?1:0);
 }
 
@@ -954,6 +971,7 @@ int YarpBroker::requestServer(Property& config)
         Bottle response;
         int ret = SendMsg(msg, config.find("on").asString(),
                           response, CONNECTION_TIMEOUT);
+
         config.put("log_port_name", response.get(LOGGERPORT).asString());
         if (ret != YARPRUN_OK)
             return ret;

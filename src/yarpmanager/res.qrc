@@ -3,10 +3,10 @@
         <file alias="logo.svg">../../data/icons/512x512/yarpmanager.svg</file>
         <file alias="stop.svg">../../data/icons/512x512/actions-media-stop_B.svg</file>
         <file alias="play.svg">../../data/icons/512x512/actions-media-play_B.svg</file>
-				<file alias="play_all.svg">../../data/icons/512x512/action-play-all.svg</file>
-				<file alias="connect_all.svg">../../data/icons/512x512/action-connect-all.svg</file>
-				<file alias="disconnect_all.svg">../../data/icons/512x512/action-disconnect-all.svg</file>
-				<file alias="yarpClean.svg">../../data/icons/512x512/action-yarp-clean.svg</file>
+        <file alias="play_all.svg">../../data/icons/512x512/action-play-all.svg</file>
+        <file alias="connect_all.svg">../../data/icons/512x512/action-connect-all.svg</file>
+        <file alias="disconnect_all.svg">../../data/icons/512x512/action-disconnect-all.svg</file>
+        <file alias="yarpClean.svg">../../data/icons/512x512/action-yarp-clean.svg</file>
         <file alias="yarp_name_list.svg">../../data/icons/512x512/action-yarp-name-list.svg</file>
         <file alias="folder-new.svg">../../data/icons/512x512/folder-new.svg</file>
         <file alias="folder.svg">../../data/icons/512x512/folder-sand.svg</file>
@@ -35,7 +35,7 @@
         <file alias="close22.svg">../../data/icons/22x22/window-close-symbolic_A.svg</file>
         <file alias="close22-red.svg">../../data/icons/22x22/window-close-symbolic_B.svg</file>
         <file alias="stop22.svg">../../data/icons/22x22/actions-media-stop_B.svg</file>
-				<file alias="stop_all.svg">../../data/icons/512x512/action-stop-all.svg</file>
+        <file alias="stop_all.svg">../../data/icons/512x512/action-stop-all.svg</file>
         <file alias="play22.svg">../../data/icons/22x22/actions-media-play_B.svg</file>
         <file alias="disconnect22.svg">../../data/icons/22x22/network-disconnected.svg</file>
         <file alias="connect22.svg">../../data/icons/22x22/actions-connect.svg</file>
@@ -54,5 +54,16 @@
         <file alias="background1.png">images/background1.png</file>
         <file alias="background2.png">images/background2.png</file>
         <file alias="background3.png">images/background3.png</file>
+        <file>images/debug_ico_b.png</file>
+        <file>images/debug_ico.png</file>
+        <file>images/error_ico_b.png</file>
+        <file>images/error_ico.png</file>
+        <file>images/info_ico_b.png</file>
+        <file>images/info_ico.png</file>
+        <file>images/save_ico.png</file>
+        <file>images/trace_ico_b.png</file>
+        <file>images/trace_ico.png</file>
+        <file>images/warning_ico_b.png</file>
+        <file>images/warning_ico.png</file>
     </qresource>
 </RCC>

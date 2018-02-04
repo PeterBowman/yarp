@@ -23,6 +23,7 @@
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QTimer>
+#include <loggerwindow.h>
 #define TOOLTIP_LOG_SIZE 10
 
 
@@ -33,6 +34,7 @@ ApplicationViewWidget::ApplicationViewWidget(yarp::manager::Application *app,
                                              QWidget *parent) :
     GenericViewWidget(parent), ApplicationEvent(),
     ui(new Ui::ApplicationViewWidget),
+    modLogAction(nullptr),
     modRunAction(nullptr),
     modStopAction(nullptr),
     modkillAction(nullptr),
@@ -92,9 +94,6 @@ ApplicationViewWidget::ApplicationViewWidget(yarp::manager::Application *app,
         ui->connectionList->resizeColumnToContents(4);
         ui->connectionList->resizeColumnToContents(5);
 
-        logTimer = new QTimer(this);
-        connect(logTimer, SIGNAL(timeout()), this, SLOT(updateLogs()));
-        logTimer->start(500);
         connect(ui->moduleList,SIGNAL(itemSelectionChanged()),this,SLOT(onModuleItemSelectionChanged()));
         connect(ui->moduleList,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),this,SLOT(onItemDoubleClicked(QTreeWidgetItem*,int)));
 
@@ -239,8 +238,6 @@ void ApplicationViewWidget::setAppName(QString appName)
 
 ApplicationViewWidget::~ApplicationViewWidget()
 {
-    logTimer->stop();
-    delete logTimer;
     delete ui;
 }
 
@@ -299,6 +296,7 @@ void ApplicationViewWidget::createModulesViewContextMenu()
     modRunAction = new QAction("Run",this);
     modStopAction = new QAction("Stop",this);
     modkillAction = new QAction("Kill",this);
+    modLogAction = new QAction("Show Log", this);
     modSeparator = new QAction(this);
     modSeparator->setSeparator(true);
     modRefreshAction = new QAction("Refresh Status",this);
@@ -313,16 +311,17 @@ void ApplicationViewWidget::createModulesViewContextMenu()
     modSelectAllAction->setIcon(QIcon(":/select-all22.svg"));
     modAssignAction->setIcon(QIcon(":/computer-available22.svg"));
 
-
     ui->moduleList->addAction(modRunAction);
     ui->moduleList->addAction(modStopAction);
     ui->moduleList->addAction(modkillAction);
+    ui->moduleList->addAction(modLogAction);
     ui->moduleList->addAction(modSeparator);
     ui->moduleList->addAction(modRefreshAction);
     ui->moduleList->addAction(modSelectAllAction);
     ui->moduleList->addAction(modAttachAction);
     ui->moduleList->addAction(modAssignAction);
 
+    connect(modLogAction, SIGNAL(triggered()), this, SLOT(openLog()));
     connect(modRunAction,SIGNAL(triggered()),this,SLOT(onRun()));
     connect(modStopAction,SIGNAL(triggered()),this,SLOT(onStop()));
     connect(modkillAction,SIGNAL(triggered()),this,SLOT(onKill()));
@@ -432,29 +431,12 @@ void ApplicationViewWidget::onConnectionItemSelectionChanged()
     }
 }
 
-void ApplicationViewWidget::updateLogs()
+void ApplicationViewWidget::openLog()
 {
-    for (int i = 0; i < ui->moduleList->topLevelItemCount(); i++)
+    for (auto& i : ui->moduleList->selectedItems())
     {
-        Executable* ex = safeManager.getExecutableById(ui->moduleList->topLevelItem(i)->text(1).toInt());
-        if (ex && ex->getBrokerType() == BrokerType::yarp)
-        {
-            YarpBroker* b = dynamic_cast<YarpBroker*>(ex->getBroker());
-            if (b && b->getLog().size())
-            {
-                QString tt;
-                
-                for (int i = b->getLog().size()-1; i >= 0 && b->getLog().size() - i < TOOLTIP_LOG_SIZE; i--)
-                {
-                    tt = std::string(b->getLog()[i]).c_str() + tt;
-                }
-                if (tt.isEmpty())
-                    ui->moduleList->topLevelItem(i)->setToolTip(0, "no-log-avaiable");
-                else
-                    ui->moduleList->topLevelItem(i)->setToolTip(0, "Application Log:\n\n" + tt);
-                    
-            }
-        }
+        Executable*   ex   = safeManager.getExecutableById(i->text(1).toInt());
+        LoggerWindow::getInstance().showLog(ex);
     }
 }
 
@@ -463,6 +445,7 @@ void ApplicationViewWidget::onModuleItemSelectionChanged()
 {
 
     if (ui->moduleList->selectedItems().isEmpty()) {
+        modLogAction->setEnabled(false);
         modRunAction->setEnabled(false);
         modStopAction->setEnabled(false);
         modkillAction->setEnabled(false);
@@ -470,6 +453,7 @@ void ApplicationViewWidget::onModuleItemSelectionChanged()
         modAssignAction->setEnabled(false);
         modRefreshAction->setEnabled(false);
     } else {
+        modLogAction->setEnabled(true);
         modRunAction->setEnabled(true);
         modStopAction->setEnabled(true);
         modkillAction->setEnabled(true);
@@ -1475,6 +1459,7 @@ void ApplicationViewWidget::selectAllModule(bool check)
         }
     }
     if (ui->moduleList->selectedItems().isEmpty()) {
+        modLogAction->setEnabled(false);
         modRunAction->setEnabled(false);
         modStopAction->setEnabled(false);
         modkillAction->setEnabled(false);
@@ -1482,6 +1467,7 @@ void ApplicationViewWidget::selectAllModule(bool check)
         modAssignAction->setEnabled(false);
         modRefreshAction->setEnabled(false);
     } else {
+        modLogAction->setEnabled(true);
         modRunAction->setEnabled(true);
         modStopAction->setEnabled(true);
         modkillAction->setEnabled(true);

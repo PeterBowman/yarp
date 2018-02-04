@@ -84,7 +84,10 @@ if(CREATE_LIB_MANAGER)
 
   set_property(GLOBAL APPEND PROPERTY YARP_TREE_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/include")
   get_property(YARP_TREE_INCLUDE_DIRS GLOBAL PROPERTY YARP_TREE_INCLUDE_DIRS)
-
+  get_property(YARP_logger_HDRS TARGET YARP_logger PROPERTY INCLUDE_DIRS)
+  include_directories(${YARP_logger_HDRS})
+  set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
+  
   include_directories(${YARP_TREE_INCLUDE_DIRS})
   include_directories(SYSTEM ${TinyXML_INCLUDE_DIRS})
 
@@ -106,6 +109,7 @@ if(CREATE_LIB_MANAGER)
 
   target_link_libraries(YARP_manager PUBLIC YARP::YARP_OS
                                      PRIVATE YARP::YARP_sig
+									 PUBLIC YARP::YARP_logger
                                              ${TinyXML_LIBRARIES})
 
   if(CREATE_LIB_MATH)

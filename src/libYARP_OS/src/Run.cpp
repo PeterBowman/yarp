@@ -680,6 +680,7 @@ int yarp::os::Run::server()
             yarp::os::ConstString alias(msg.find("isrunning").asString());
             Bottle result;
             result.addString(mProcessVector.IsRunning(alias)?"running":"not running");
+            result.addString(mProcessVector.logPort(std::string(alias.c_str())));
             port.reply(result);
             continue;
         }
@@ -1190,6 +1191,8 @@ int yarp::os::Run::server()
                 yarp::os::ConstString alias(msg.find("isrunning").asString());
                 Bottle result;
                 result.addString(mProcessVector->IsRunning(alias)?"running":"not running");
+
+                result.addString(mProcessVector->logPort(alias.c_str()));
                 RUNLOG("<<<writeToPipe")
                 writeToPipe(pipe_manager2server[WRITE_TO_PIPE], result.toString());
                 RUNLOG(">>>writeToPipe")
@@ -2109,6 +2112,8 @@ int yarp::os::Run::executeCmdStdout(Bottle& msg, Bottle& result, yarp::os::Const
     {
         pInf->setEnv(msg.find("env").asString());
     }
+    portName = portName + "/" + std::to_string(stdout_process_info.dwProcessId);
+    pInf->setLogPort(portName);
     mProcessVector.Add(pInf);
 
     result.addInt(cmd_process_info.dwProcessId);
@@ -2119,7 +2124,7 @@ int yarp::os::Run::executeCmdStdout(Bottle& msg, Bottle& result, yarp::os::Const
                              +yarp::os::ConstString("\n");
 
     result.addString(out.c_str());
-    portName = portName + "/" + std::to_string(stdout_process_info.dwProcessId);
+    
     result.addString(portName.c_str());
     fprintf(stderr, "%s", out.c_str());
 

@@ -116,6 +116,7 @@ public:
 
     }
     bool Match(yarp::os::ConstString& alias){ return mAlias==alias; }
+    bool Match(const std::string& alias) { return mAlias == alias; }
 #if !defined(_WIN32)
     virtual bool Clean(PID pid, YarpRunProcInfo* &pRef)
     {
@@ -140,8 +141,10 @@ public:
 
     void setCmd(const yarp::os::ConstString& cmd) { mCmd = cmd; }
     void setEnv(const yarp::os::ConstString& env) { mEnv = env; }
+    void setLogPort(const std::string& newlp) { logPort = newlp; }
 
 protected:
+    std::string logPort;
     yarp::os::ConstString mAlias;
     yarp::os::ConstString mOn;
 
@@ -167,6 +170,7 @@ public:
     bool Add(YarpRunProcInfo *process);
     int Signal(yarp::os::ConstString& alias, int signum);
     int Killall(int signum);
+    std::string logPort(const std::string& alias);
 
 #if defined(_WIN32)
     HANDLE hZombieHunter;

@@ -116,7 +116,6 @@ private:
 
 
 private:
-    QTimer* logTimer;
     QMainWindow *builderWindowContainer;
     QDockWidget *builderWidget;
     BuilderWindow *builder;
@@ -130,6 +129,7 @@ private:
     yarp::os::Property* m_pConfig;
     yarp::manager::Manager man;
 
+    QAction *modLogAction;
     QAction *modRunAction;
     QAction *modStopAction;
     QAction *modkillAction;
@@ -175,7 +175,7 @@ private slots:
     void onResourceItemSelectionChanged();
     void onConnectionItemSelectionChanged();
     void onModuleItemSelectionChanged();
-    void updateLogs();
+    void openLog();
     void selectAllModule();
     void selectAllConnections();
     void selectAllResources();
