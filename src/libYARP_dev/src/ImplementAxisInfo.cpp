@@ -8,6 +8,7 @@
 
 #include "yarp/dev/ImplementAxisInfo.h"
 #include <yarp/dev/ControlBoardHelper.h>
+#include <yarp/os/Log.h>
 
 #include <cstdio>
 using namespace yarp::dev;
@@ -69,4 +70,14 @@ bool ImplementAxisInfo::getJointType(int axis, yarp::dev::JointTypeEnum& type)
     return ret;
 }
 
-bool ret;
+// Stub interface
+
+bool StubImplAxisInfoRaw::NOT_YET_IMPLEMENTED(const char *func)
+{
+    if (func)
+        yError("%s: not yet implemented\n", func);
+    else
+        yError("Function not yet implemented\n");
+
+    return false;
+}

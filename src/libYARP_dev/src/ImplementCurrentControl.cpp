@@ -9,6 +9,7 @@
 #include "yarp/dev/ControlBoardInterfacesImpl.h"
 #include <yarp/dev/ControlBoardHelper.h>
 #include <yarp/dev/impl/FixedSizeBuffersManager.h>
+#include <yarp/os/Log.h>
 
 #include <stdio.h>
 using namespace yarp::dev;
@@ -176,4 +177,16 @@ bool ImplementCurrentControl::getCurrentRange(int j, double *min, double *max)
     *min = castToMapper(helper)->ampereS2A(min_t, k);
     *max = castToMapper(helper)->ampereS2A(max_t, k);
     return ret;
+}
+
+// Stub interface
+
+bool StubImplCurrentControlRaw::NOT_YET_IMPLEMENTED(const char *func)
+{
+    if (func)
+        yError("%s: not yet implemented\n", func);
+    else
+        yError("Function not yet implemented\n");
+
+    return false;
 }

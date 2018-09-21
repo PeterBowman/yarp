@@ -9,6 +9,7 @@
 
 #include <yarp/dev/ImplementAmplifierControl.h>
 #include <yarp/dev/ControlBoardHelper.h>
+#include <yarp/os/Log.h>
 
 #include <cmath>
 
@@ -193,4 +194,16 @@ bool ImplementAmplifierControl::getPowerSupplyVoltage(int m, double *voltage)
     int k;
     k=castToMapper(helper)->toHw(m);
     return iAmplifier->getPowerSupplyVoltageRaw(k, voltage);
+}
+
+// Stub interface
+
+bool StubImplAmplifierControlRaw::NOT_YET_IMPLEMENTED(const char *func)
+{
+    if (func)
+        yError("%s: not yet implemented\n", func);
+    else
+        yError("Function not yet implemented\n");
+
+    return false;
 }

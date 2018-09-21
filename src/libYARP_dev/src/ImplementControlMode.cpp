@@ -9,6 +9,7 @@
 #include <yarp/dev/ImplementControlMode.h>
 #include <yarp/dev/ControlBoardHelper.h>
 #include <yarp/dev/impl/FixedSizeBuffersManager.h>
+#include <yarp/os/Log.h>
 
 #include <cstdio>
 using namespace yarp::dev;
@@ -125,4 +126,16 @@ bool ImplementControlMode::setControlModes(int *modes)
     bool ret = raw->setControlModesRaw(buffValues.getData());
     buffManager->releaseBuffer(buffValues);
     return ret;
+}
+
+// Stub interface
+
+bool StubImplControlModeRaw::NOT_YET_IMPLEMENTED(const char *func)
+{
+    if (func)
+        yError("%s: not yet implemented\n", func);
+    else
+        yError("Function not yet implemented\n");
+
+    return false;
 }

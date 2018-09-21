@@ -9,15 +9,17 @@
 #ifndef YARP_DEV_IMPLEMENTAXISINFO_H
 #define YARP_DEV_IMPLEMENTAXISINFO_H
 
-#include <yarp/dev/ControlBoardInterfaces.h>
+#include <yarp/dev/api.h>
+#include <yarp/dev/IAxisInfo.h>
 
 namespace yarp {
     namespace dev {
         class ImplementAxisInfo;
+        class StubImplAxisInfoRaw;
     }
 }
 
-class YARP_dev_API yarp::dev::ImplementAxisInfo: public IAxisInfo
+class YARP_dev_API yarp::dev::ImplementAxisInfo : public IAxisInfo
 {
 protected:
     IAxisInfoRaw *iinfo;
@@ -51,6 +53,48 @@ public:
 
     virtual bool getAxisName(int axis, std::string& name) override;
     virtual bool getJointType(int axis, yarp::dev::JointTypeEnum& type) override;
+};
+
+/**
+ * Stub implementation of IAxisInfoRaw interface.
+ * Inherit from this class if you want a stub implementation
+ * of methods in IAxisInfoRaw. This class allows to
+ * gradually implement an interface; you just have to implement
+ * functions that are useful for the underlying device.
+ * Another way to see this class is as a means to convert
+ * compile time errors in runtime errors.
+ *
+ * If you use this class please be aware that the device
+ * you are wrapping might not function properly because you
+ * missed to implement useful functionalities.
+ */
+class YARP_dev_API yarp::dev::StubImplAxisInfoRaw : public IAxisInfoRaw
+{
+private:
+    /**
+     * Helper for printing error message, see below.
+     * Implemented in ImplementAxisInfo.cpp.
+     */
+    bool NOT_YET_IMPLEMENTED(const char *func=0);
+
+public:
+    virtual ~StubImplAxisInfoRaw() {}
+
+    /* Get the name for a particular axis.
+    * @param axis joint number
+    * @param name the axis name
+    * @return true if everything goes fine, false otherwise.
+    */
+    virtual bool getAxisNameRaw(int axis, std::string& name) override
+    { return NOT_YET_IMPLEMENTED("getAxisNameRaw"); }
+
+    /* Get the joint type (e.g. revolute/prismatic) for a particular axis.
+    * @param axis joint number
+    * @param type the joint type
+    * @return true if everything goes fine, false otherwise.
+    */
+    virtual bool getJointTypeRaw(int axis, yarp::dev::JointTypeEnum& type) override
+    { return NOT_YET_IMPLEMENTED("getJointTypeRaw"); }
 };
 
 #endif // YARP_DEV_IMPLEMENTAXISINFO_H

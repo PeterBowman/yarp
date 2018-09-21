@@ -125,12 +125,12 @@ public:
  * missed to implement useful functionalities.
  *
  */
-class YARP_dev_API yarp::dev::StubImplPositionControlRaw: public IPositionControlRaw
+class YARP_dev_API yarp::dev::StubImplPositionControlRaw : public IPositionControlRaw
 {
 private:
     /**
      * Helper for printing error message, see below.
-     * Implemented in ControlBoardInterfacesImpl.cpp.
+     * Implemented in ImplementPositionControl.cpp.
      */
     bool NOT_YET_IMPLEMENTED(const char *func=0);
 

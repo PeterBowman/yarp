@@ -9,14 +9,15 @@
 #ifndef YARP_DEV_IMPLEMENTAMPLIFIERCONTROL_H
 #define YARP_DEV_IMPLEMENTAMPLIFIERCONTROL_H
 
-#include <yarp/dev/ControlBoardInterfaces.h>
 #include <yarp/dev/api.h>
+#include <yarp/dev/IAmplifierControl.h>
 
 namespace yarp
 {
     namespace dev
     {
         class ImplementAmplifierControl;
+        class StubImplAmplifierControlRaw;
     }
 }
 
@@ -187,5 +188,79 @@ public:
     virtual bool getPowerSupplyVoltage(int j, double* val) override;
 };
 
+/**
+ * Stub implementation of IAmplifierControlRaw interface.
+ * Inherit from this class if you want a stub implementation
+ * of methods in IAmplifierControlRaw. This class allows to
+ * gradually implement an interface; you just have to implement
+ * functions that are useful for the underlying device.
+ * Another way to see this class is as a means to convert
+ * compile time errors in runtime errors.
+ *
+ * If you use this class please be aware that the device
+ * you are wrapping might not function properly because you
+ * missed to implement useful functionalities.
+ *
+ */
+class YARP_dev_API yarp::dev::StubImplAmplifierControlRaw : public IAmplifierControlRaw
+{
+private:
+    /**
+     * Helper for printing error message, see below.
+     * Implemented in ImplementAmplifierControl.cpp.
+     */
+    bool NOT_YET_IMPLEMENTED(const char *func=0);
+
+public:
+    virtual ~StubImplAmplifierControlRaw() {}
+
+    virtual bool enableAmpRaw(int j) override
+    { return NOT_YET_IMPLEMENTED("enableAmpRaw"); }
+
+    virtual bool disableAmpRaw(int j) override
+    { return NOT_YET_IMPLEMENTED("disableAmpRaw"); }
+
+    virtual bool getAmpStatusRaw(int *st) override
+    { return NOT_YET_IMPLEMENTED("getAmpStatusRaw"); }
+
+    virtual bool getAmpStatusRaw(int j, int *st) override
+    { return NOT_YET_IMPLEMENTED("getAmpStatusRaw"); }
+
+    virtual bool getCurrentsRaw(double *vals) override
+    { return NOT_YET_IMPLEMENTED("getCurrentsRaw"); }
+
+    virtual bool getCurrentRaw(int j, double *val) override
+    { return NOT_YET_IMPLEMENTED("getCurrentRaw"); }
+
+    virtual bool setMaxCurrentRaw(int j, double v) override
+    { return NOT_YET_IMPLEMENTED("setMaxCurrentRaw"); }
+
+    virtual bool getMaxCurrentRaw(int j, double *v) override
+    { return NOT_YET_IMPLEMENTED("getMaxCurrentRaw"); }
+
+    virtual bool getNominalCurrentRaw(int m, double *val) override
+    { return NOT_YET_IMPLEMENTED("getNominalCurrentRaw"); }
+
+    virtual bool setNominalCurrentRaw(int m, const double val) override
+    { return NOT_YET_IMPLEMENTED("setNominalCurrentRaw"); }
+
+    virtual bool getPeakCurrentRaw(int m, double *val) override
+    { return NOT_YET_IMPLEMENTED("getPeakCurrentRaw"); }
+
+    virtual bool setPeakCurrentRaw(int m, const double val) override
+    { return NOT_YET_IMPLEMENTED("setPeakCurrentRaw"); }
+
+    virtual bool getPWMRaw(int j, double* val) override
+    { return NOT_YET_IMPLEMENTED("getPWMRaw"); }
+
+    virtual bool getPWMLimitRaw(int j, double* val) override
+    { return NOT_YET_IMPLEMENTED("getPWMLimitRaw"); }
+
+    virtual bool setPWMLimitRaw(int j, const double val) override
+    { return NOT_YET_IMPLEMENTED("setPWMLimitRaw"); }
+
+    virtual bool getPowerSupplyVoltageRaw(int j, double* val) override
+    { return NOT_YET_IMPLEMENTED("getPowerSupplyVoltageRaw"); }
+};
 
 #endif // YARP_DEV_IMPLEMENTAMPLIFIERCONTROL_H

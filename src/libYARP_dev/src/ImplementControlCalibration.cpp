@@ -7,8 +7,7 @@
  * BSD-3-Clause license. See the accompanying LICENSE file for details.
  */
 
-#include <yarp/dev/DeviceDriver.h>
-#include <yarp/dev/ControlBoardInterfaces.h>
+#include <yarp/dev/ControlBoardHelper.h>
 #include <yarp/dev/ImplementControlCalibration.h>
 #include <yarp/os/Log.h>
 
@@ -138,4 +137,16 @@ bool ImplementControlCalibration::setCalibrationParameters(int axis, const Calib
     int k = castToMapper(helper)->toHw(axis);
 
     return iCalibrate->setCalibrationParametersRaw(k, params);
+}
+
+// Stub interface
+
+bool StubImplControlCalibrationRaw::NOT_YET_IMPLEMENTED(const char *func)
+{
+    if (func)
+        yError("%s: not yet implemented\n", func);
+    else
+        yError("Function not yet implemented\n");
+
+    return false;
 }
