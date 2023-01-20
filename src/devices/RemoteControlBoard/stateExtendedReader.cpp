@@ -65,12 +65,13 @@ void StateExtendedInputPort::init(int numberOfJoints)
     last.current.resize(numberOfJoints);
     last.controlMode.resize(numberOfJoints);
     last.interactionMode.resize(numberOfJoints);
+    last.times.resize(numberOfJoints);
 }
 
 void StateExtendedInputPort::onRead(yarp::dev::impl::jointData &v)
 {
+    std::lock_guard lock(mutex);
     now=Time::now();
-    mutex.lock();
 
     if (count>0)
     {
@@ -94,7 +95,6 @@ void StateExtendedInputPort::onRead(yarp::dev::impl::jointData &v)
     if (!lastStamp.isValid()) {
         lastStamp.update(now);
     }
-    mutex.unlock();
 }
 
 void StateExtendedInputPort::setTimeout(const double& timeout) {
@@ -103,7 +103,7 @@ void StateExtendedInputPort::setTimeout(const double& timeout) {
 
 bool StateExtendedInputPort::getLastSingle(int j, int field, double *data, Stamp &stamp, double &localArrivalTime)
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     bool ret = valid;
     if (ret)
     {
@@ -165,14 +165,13 @@ bool StateExtendedInputPort::getLastSingle(int j, int field, double *data, Stamp
             ret = false;
         }
     }
-    mutex.unlock();
 
     return ret;
 }
 
 bool StateExtendedInputPort::getLastSingle(int j, int field, int *data, Stamp &stamp, double &localArrivalTime)
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     bool ret = valid;
     if (ret)
     {
@@ -198,13 +197,12 @@ bool StateExtendedInputPort::getLastSingle(int j, int field, int *data, Stamp &s
             ret = false;
         }
     }
-    mutex.unlock();
     return ret;
 }
 
 bool StateExtendedInputPort::getLastVector(int field, double* data, Stamp& stamp, double& localArrivalTime)
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     bool ret = valid;
     if (ret)
     {
@@ -266,14 +264,13 @@ bool StateExtendedInputPort::getLastVector(int field, double* data, Stamp& stamp
             ret = false;
         }
     }
-    mutex.unlock();
 
     return ret;
 }
 
 bool StateExtendedInputPort::getLastVector(int field, int* data, Stamp& stamp, double& localArrivalTime)
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     bool ret = valid;
     if (ret)
     {
@@ -299,22 +296,20 @@ bool StateExtendedInputPort::getLastVector(int field, int* data, Stamp& stamp, d
             ret = false;
         }
     }
-    mutex.unlock();
     return ret;
 }
 
 int StateExtendedInputPort::getIterations()
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     int ret=count;
-    mutex.unlock();
     return ret;
 }
 
 // time is in ms
 void StateExtendedInputPort::getEstFrequency(int &ite, double &av, double &min, double &max)
 {
-    mutex.lock();
+    std::lock_guard lock(mutex);
     ite=count;
     min=deltaTMin*1000;
     max=deltaTMax*1000;
@@ -327,5 +322,10 @@ void StateExtendedInputPort::getEstFrequency(int &ite, double &av, double &min, 
         av=deltaT/count;
     }
     av=av*1000;
-    mutex.unlock();
+}
+
+Stamp StateExtendedInputPort::getLastStamp() const
+{
+    std::lock_guard lock(mutex);
+    return lastStamp;
 }

@@ -829,6 +829,8 @@ void ControlBoardWrapper::run()
         yarp_struct.torque_isValid = torqueOk;
         std::copy(ros_struct.effort.begin(), ros_struct.effort.end(), yarp_struct.torque.begin());
 
+        yarp_struct.times = times;
+
         // Get remaining data from HW
         yarp_struct.jointAcceleration_isValid = getEncoderAccelerations(yarp_struct.jointAcceleration.data());
         yarp_struct.motorPosition_isValid = getMotorEncoders(yarp_struct.motorPosition.data());

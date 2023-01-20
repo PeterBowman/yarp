@@ -46,6 +46,7 @@ public:
     bool controlMode_isValid{false};
     yarp::sig::VectorOf<int> interactionMode{};
     bool interactionMode_isValid{false};
+    yarp::sig::VectorOf<double> times{};
 
     // Default constructor
     jointData() = default;
@@ -72,7 +73,8 @@ public:
               const yarp::sig::VectorOf<int>& controlMode,
               const bool controlMode_isValid,
               const yarp::sig::VectorOf<int>& interactionMode,
-              const bool interactionMode_isValid);
+              const bool interactionMode_isValid,
+              const yarp::sig::VectorOf<double>& times);
 
     // Read structure on a Wire
     bool read(yarp::os::idl::WireReader& reader) override;
@@ -224,6 +226,12 @@ private:
     bool write_interactionMode_isValid(const yarp::os::idl::WireWriter& writer) const;
     bool nested_read_interactionMode_isValid(yarp::os::idl::WireReader& reader);
     bool nested_write_interactionMode_isValid(const yarp::os::idl::WireWriter& writer) const;
+
+    // read/write times field
+    bool read_times(yarp::os::idl::WireReader& reader);
+    bool write_times(const yarp::os::idl::WireWriter& writer) const;
+    bool nested_read_times(yarp::os::idl::WireReader& reader);
+    bool nested_write_times(const yarp::os::idl::WireWriter& writer) const;
 };
 
 } // namespace yarp::dev::impl

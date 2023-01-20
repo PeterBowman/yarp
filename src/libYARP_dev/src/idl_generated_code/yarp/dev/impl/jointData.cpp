@@ -34,7 +34,8 @@ jointData::jointData(const yarp::sig::VectorOf<double>& jointPosition,
                      const yarp::sig::VectorOf<int>& controlMode,
                      const bool controlMode_isValid,
                      const yarp::sig::VectorOf<int>& interactionMode,
-                     const bool interactionMode_isValid) :
+                     const bool interactionMode_isValid,
+                     const yarp::sig::VectorOf<double>& times) :
         WirePortable(),
         jointPosition(jointPosition),
         jointPosition_isValid(jointPosition_isValid),
@@ -57,7 +58,8 @@ jointData::jointData(const yarp::sig::VectorOf<double>& jointPosition,
         controlMode(controlMode),
         controlMode_isValid(controlMode_isValid),
         interactionMode(interactionMode),
-        interactionMode_isValid(interactionMode_isValid)
+        interactionMode_isValid(interactionMode_isValid),
+        times(times)
 {
 }
 
@@ -130,6 +132,9 @@ bool jointData::read(yarp::os::idl::WireReader& reader)
     if (!read_interactionMode_isValid(reader)) {
         return false;
     }
+    if (!nested_read_times(reader)) {
+        return false;
+    }
     if (reader.isError()) {
         return false;
     }
@@ -140,7 +145,7 @@ bool jointData::read(yarp::os::idl::WireReader& reader)
 bool jointData::read(yarp::os::ConnectionReader& connection)
 {
     yarp::os::idl::WireReader reader(connection);
-    if (!reader.readListHeader(22)) {
+    if (!reader.readListHeader(23)) {
         return false;
     }
     if (!read(reader)) {
@@ -218,6 +223,9 @@ bool jointData::write(const yarp::os::idl::WireWriter& writer) const
     if (!write_interactionMode_isValid(writer)) {
         return false;
     }
+    if (!nested_write_times(writer)) {
+        return false;
+    }
     if (writer.isError()) {
         return false;
     }
@@ -228,7 +236,7 @@ bool jointData::write(const yarp::os::idl::WireWriter& writer) const
 bool jointData::write(yarp::os::ConnectionWriter& connection) const
 {
     yarp::os::idl::WireWriter writer(connection);
-    if (!writer.writeListHeader(22)) {
+    if (!writer.writeListHeader(23)) {
         return false;
     }
     if (!write(writer)) {
@@ -1254,6 +1262,52 @@ bool jointData::nested_read_interactionMode_isValid(yarp::os::idl::WireReader& r
 bool jointData::nested_write_interactionMode_isValid(const yarp::os::idl::WireWriter& writer) const
 {
     if (!writer.writeBool(interactionMode_isValid)) {
+        return false;
+    }
+    return true;
+}
+
+// read times field
+bool jointData::read_times(yarp::os::idl::WireReader& reader)
+{
+    if (reader.noMore()) {
+        reader.fail();
+        return false;
+    }
+    if (!reader.read(times)) {
+        reader.fail();
+        return false;
+    }
+    return true;
+}
+
+// write times field
+bool jointData::write_times(const yarp::os::idl::WireWriter& writer) const
+{
+    if (!writer.write(times)) {
+        return false;
+    }
+    return true;
+}
+
+// read (nested) times field
+bool jointData::nested_read_times(yarp::os::idl::WireReader& reader)
+{
+    if (reader.noMore()) {
+        reader.fail();
+        return false;
+    }
+    if (!reader.readNested(times)) {
+        reader.fail();
+        return false;
+    }
+    return true;
+}
+
+// write (nested) times field
+bool jointData::nested_write_times(const yarp::os::idl::WireWriter& writer) const
+{
+    if (!writer.writeNested(times)) {
         return false;
     }
     return true;

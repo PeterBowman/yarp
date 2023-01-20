@@ -13,8 +13,7 @@
 #include <yarp/os/LogStream.h>
 #include <yarp/dev/impl/jointData.h>
 
-#include <numeric>
-#include <cmath>
+#include <algorithm> // std::copy
 
 using namespace yarp::os;
 using namespace yarp::dev;
@@ -342,7 +341,6 @@ bool ControlBoard_nws_yarp::setDevice(yarp::dev::DeviceDriver* driver, bool owne
         return false;
     }
     subdevice_joints = static_cast<size_t>(tmp_axes);
-    times.resize(subdevice_joints);
 
     // Initialization
     streaming_parser.init(subdevice_ptr);
@@ -369,8 +367,6 @@ void ControlBoard_nws_yarp::closeDevice()
     subdevice_owned = false;
     subdevice_joints = 0;
     subdevice_ready = false;
-
-    times.clear();
 
     // Clear all interfaces
     iPidControl = nullptr;
@@ -454,10 +450,11 @@ void ControlBoard_nws_yarp::run()
     data.current.resize(subdevice_joints);
     data.controlMode.resize(subdevice_joints);
     data.interactionMode.resize(subdevice_joints);
+    data.times.resize(subdevice_joints);
 
     // Get data from HW
     if (iEncodersTimed) {
-        data.jointPosition_isValid = iEncodersTimed->getEncodersTimed(data.jointPosition.data(), times.data());
+        data.jointPosition_isValid = iEncodersTimed->getEncodersTimed(data.jointPosition.data(), data.times.data());
         data.jointVelocity_isValid = iEncodersTimed->getEncoderSpeeds(data.jointVelocity.data());
         data.jointAcceleration_isValid = iEncodersTimed->getEncoderAccelerations(data.jointAcceleration.data());
     } else {
@@ -508,22 +505,21 @@ void ControlBoard_nws_yarp::run()
         data.interactionMode_isValid = false;
     }
 
-    // Check if the encoders timestamps are consistent.
-    for (double tt : times)
+    // Update the port envelope time by picking the most recent timestamp from the encoders
+    yarp::os::Stamp latestAcquisitionStamp;
+
+    if (data.jointPosition_isValid) // forward an invalid timestamp if no data is available
     {
-        if (std::abs(times[0] - tt) > 1.0)
+        for (double tt : data.times)
         {
-            yCError(CONTROLBOARD, "Encoder Timestamps are not consistent! Data will not be published.");
-            yarp::sig::Vector _data(subdevice_joints);
-            return;
+            if (tt > latestAcquisitionStamp.getTime())
+            {
+                latestAcquisitionStamp.update(tt);
+            }
         }
     }
 
-    // Update the port envelope time by averaging all timestamps
-    time.update(std::accumulate(times.begin(), times.end(), 0.0) / subdevice_joints);
-    yarp::os::Stamp averageTime = time;
-
-    extendedOutputStatePort.setEnvelope(averageTime);
+    extendedOutputStatePort.setEnvelope(latestAcquisitionStamp);
     extendedOutputState_buffer.write();
 
     // handle state:o
@@ -531,6 +527,6 @@ void ControlBoard_nws_yarp::run()
     v.resize(subdevice_joints);
     std::copy(data.jointPosition.begin(), data.jointPosition.end(), v.begin());
 
-    outputPositionStatePort.setEnvelope(averageTime);
+    outputPositionStatePort.setEnvelope(latestAcquisitionStamp);
     outputPositionStatePort.write();
 }

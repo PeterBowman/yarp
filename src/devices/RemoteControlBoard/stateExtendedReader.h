@@ -40,7 +40,7 @@ class StateExtendedInputPort :
         public yarp::os::BufferedPort<yarp::dev::impl::jointData>
 {
     yarp::dev::impl::jointData last;
-    std::mutex mutex;
+    mutable std::mutex mutex;
     Stamp lastStamp;
     double deltaT;
     double deltaTMax;
@@ -79,6 +79,8 @@ public:
 
     // time is in ms
     void getEstFrequency(int &ite, double &av, double &min, double &max);
+
+    Stamp getLastStamp() const;
 };
 
 #endif // YARP_DEV_REMOTECONTROLBOARD_STATEEXTENDEDREADER_H

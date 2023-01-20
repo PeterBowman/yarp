@@ -84,8 +84,6 @@ private:
     double period {default_period};
 
     std::string partName; // to open ports and print more detailed debug messages
-    yarp::sig::Vector times; // time for each joint
-    yarp::os::Stamp time; // envelope to attach to the state port
 
     yarp::dev::DeviceDriver* subdevice_ptr{nullptr};
     bool subdevice_owned = false;
